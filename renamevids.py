@@ -1,8 +1,9 @@
 import os
 
 """ 
-Renames ...
-Usage:
+Scans subdirectories containing tv episodes, identifies them and move them to their
+defined destination folder, using a simple renaming.
+Usage: 
 python renamevids.py
 """
 
