@@ -1,3 +1,4 @@
+#%%
 import os
 
 """ 
@@ -11,32 +12,45 @@ path = '/home/mrodriguez/renamevids/downloads'
 
 seriesmap = {
 	'walking' : '/home/mrodriguez/renamevids/tvseries/The.Walking.Dead',
-	'robot'	  : '/home/mrodriguez/renamevids/tvseries/Mr.Robot'	
+	'robot'	: '/home/mrodriguez/renamevids/tvseries/Mr.Robot'	
 }
 
-def get_immediate_subdirectories(_path):
-    return [name for name in os.listdir(_path)
-            if os.path.isdir(os.path.join(_path, name))]
+def get_immediate_subdirectories(path):
+    subdirs = []
+    for item in os.walk(path):
+        subdirs.append((item[0], item[2]))
+    return subdirs
+
+def get_immediate_files(_path):
+    return [name for name in os.listdir(path)
+            if os.path.isfile(os.path.join(_path, name))]
 
 def process_directory(directory):
-	print('Processing "' + directory + '" ...')
-	ldirectory = directory.lower()
-
-	found = False
+    print('Found directory: ', directory)
+    series = find_series(directory)
+    if series:
+        process(directory, series)
+    else:    
+        print('No match found for', directory)
+        
+def find_series(directory):
+    ldirectory = directory[0].lower()
+    for series in seriesmap.items():
+         if series[0] in ldirectory:
+             return series
 	
-	for key, value in seriesmap.iteritems():
-		if key in ldirectory:
-			print 'Match: ' + value
-			found = True
-			break;
+    return ''
+        
+def process(source_dir, series):
+    print('Processing:', source_dir)
+    for file in get_immediate_files(source_dir):
+        print('File found:', file)
 
-	if not found:
-		print 'No match found for ' + directory			
-
-for directory in get_immediate_subdirectories(path):
-	process_directory(directory)
-	print('\n')
+def main():
+    for directory in get_immediate_subdirectories(path):
+        process_directory(directory)
+        print()
 	
+if __name__ == '__main__':
+    main()
 
-
-    
